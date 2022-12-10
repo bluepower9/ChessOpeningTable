@@ -1,0 +1,3 @@
+*.pgn
+__pycache__
+lichess/

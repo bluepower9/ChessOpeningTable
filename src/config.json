@@ -1,0 +1,7 @@
+{
+    "database":{
+        "url": "mongodb://localhost:27017/",
+        "db_name": "chess",
+        "collection": "games5"
+    }
+}
