@@ -8,6 +8,7 @@ created with flask. The mainpage can be found on localhost:5000 where you can in
 display the current position. You will be able to cycle through the moves by clicking on them to quickly navigate through the opening table.  The table will show the number of games
 each move has been played as well as the win and draw percentages for the position. 
 
+---
 
 ## REQUIREMENTS
 #### - requires python 3 (developed on 3.10)
@@ -27,7 +28,7 @@ each move has been played as well as the win and draw percentages for the positi
 ---
 
 ## Running Website and Service and How to Use
-#### - the project is entirely using Flask so to run, you only need to start `python3 app.py`
+#### - the project is entirely built using Flask so to run, you only need to start `python3 app.py`
 #### - navigate to localhost:5000 to view homepage and follow instructions.  To get a FEN, you can navigate to https://lichess.org/analysis and get the FEN from the bottom.
 #### - on the analysis page, it displays the top 5 moves on the right as well as the parameters you searched for on top.
 #### - Click on any of the moves on the right to play the move and view the statistics for that position. If you want to restart, click "Opening Table" at the top.
