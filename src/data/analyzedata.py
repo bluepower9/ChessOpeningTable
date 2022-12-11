@@ -6,6 +6,14 @@ import chess
 def aggregate_data(state: list, db_name:str = "chess", collection:str = 'games', min_elo=600, max_elo=3000, format=['blitz', 'bullet', 'standard']):
     '''
     performs aggregation pipeline for the data in MongoDB
+
+    ARGS:
+        state: list of all game states to analyze and gather data.
+        db_name: database name
+        collection: collection name
+        min_elo: minimum elo to search
+        max_elo: maximum elo to search
+        format: game format
     '''
     pipeline = [
     {
@@ -52,7 +60,7 @@ def aggregate_data(state: list, db_name:str = "chess", collection:str = 'games',
 
 
 
-
+#for testing
 if __name__ == '__main__':
     board = chess.Board()
     fens = {}

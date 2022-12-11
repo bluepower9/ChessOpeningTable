@@ -4,20 +4,21 @@ from data.analyzedata import aggregate_data
 import chess
 import flask
 
+
 app = Blueprint('games', __name__)
-
-
-
 
 @app.route('/')
 def index():
     return flask.render_template('index.html')
 
     
-
-
 @app.route('/games/analysis', methods=['GET'])
 def get_game_state():
+    '''
+    calls the database and gets the top 5 moves from it based on how many times it has occured. Returns a template page.
+    '''
+
+    #gets the args from the query string
     args = request.args.to_dict()
     fen = args.get('fen')
     if not fen:
@@ -43,7 +44,6 @@ def get_game_state():
         game_format = ['bullet', 'blitz', 'standard']
 
 
-
     board = chess.Board(fen)
     all_moves = {}  #dict of fen: move
 
@@ -53,6 +53,7 @@ def get_game_state():
         all_moves[board.fen()] = move
         board.pop()
 
+    #calls the aggregate data function to run realtime analysis to get data.
     data = aggregate_data(
         list(all_moves.keys()), 
         db_name=current_app.config.get('database').get('db_name'), 
@@ -82,9 +83,6 @@ def get_game_state():
 
         result.append(state)
     
-
-
-
     return flask.render_template('analysis.html', min_elo=min_elo, max_elo=max_elo, format=game_format, fen=fen, moves=result)
 
    

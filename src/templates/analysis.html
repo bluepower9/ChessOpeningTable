@@ -20,6 +20,9 @@
         margin-top: 40px;
         margin-left: 50px;
         margin-right: 50px;
+        overflow: hidden;
+        height: 392px;
+        width: 392px;
     }
     
 
@@ -80,6 +83,13 @@
         color:saddlebrown;
     }
 
+    iframe{
+        pointer-events: none;
+        position: relative;
+        left: -59px;
+        top: -42px;
+    }
+
 </style>
 
 
@@ -99,7 +109,7 @@
     </div>
     <div class="inline-flex">
         <div class="board">
-            <iframe src="https://lichess.org/analysis/{{fen}}" width="500" height="500"></iframe>
+            <iframe src="https://lichess.org/analysis/{{fen}}" width="500" height="500" scrolling="no"></iframe>
         </div>
         <div class="top-moves">
             <h1>Top 5 Moves</h1>
