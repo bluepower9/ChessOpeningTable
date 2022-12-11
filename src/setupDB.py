@@ -61,12 +61,15 @@ def insert_data(filename: str, max_games:int=100000, db_name:str='chess', collec
         aggregate: whether or not to aggregate games as they are added to database (sum up the white, black, and draw scores)
     '''
 
+    print('connecting to database...')
     client = connect()
     db = client[db_name][collection]
 
+    print('creating index...')
     db.create_index([('game_state', pymongo.ASCENDING), ('elo', pymongo.ASCENDING), ('format', pymongo.ASCENDING)], unique=True)
-
+    
     with open(filename, 'r') as file:
+        print('importing games from file: ', filename)
         game = chess.pgn.read_game(file)
         count = 0
         with alive_bar(max_games) as bar:   #adds really cool progress bar!
@@ -95,6 +98,7 @@ def insert_data(filename: str, max_games:int=100000, db_name:str='chess', collec
                 play_game(db, moves, format, elo, result)
 
                 game = chess.pgn.read_game(file)
+                count += 1
                 bar()
             
 
@@ -105,10 +109,9 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--file', required=True)
     parser.add_argument('-d', '--db', default='chess')
     parser.add_argument('-c', '--collection', default='games')
-    parser.add_argument('-g', '--games', default=100000)
+    parser.add_argument('-g', '--games', type=int, default=100000)
     args = parser.parse_args()
     
-    print('Importing games from: ', args.file)
 
-    insert_data(args.file, max_games=1000000, db_name=args.db, max_games=args.games, collection=args.collection, aggregate=True)
+    insert_data(args.file, db_name=args.db, max_games=args.games, collection=args.collection, aggregate=True)
     
