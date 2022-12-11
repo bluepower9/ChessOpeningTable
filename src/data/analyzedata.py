@@ -3,7 +3,14 @@ import pymongo
 import chess
 
 
-def aggregate_data(state: list, db_name:str = "chess", collection:str = 'games', min_elo=600, max_elo=3000, format=['blitz', 'bullet', 'standard']):
+def aggregate_data(
+    state: list, 
+    db_name:str = "chess", 
+    collection:str = 'games', 
+    min_elo=600, 
+    max_elo=3000, 
+    format=['blitz', 'bullet', 'standard']
+    ) -> list:
     '''
     performs aggregation pipeline for the data in MongoDB
 
@@ -14,6 +21,9 @@ def aggregate_data(state: list, db_name:str = "chess", collection:str = 'games',
         min_elo: minimum elo to search
         max_elo: maximum elo to search
         format: game format
+
+    RETURNS:
+        list of the top 5 game states based on total games the state has occured in.
     '''
     pipeline = [
     {
@@ -56,6 +66,6 @@ def aggregate_data(state: list, db_name:str = "chess", collection:str = 'games',
 
     db = connect()
 
-    return db[db_name][collection].aggregate(pipeline)
+    return list(db[db_name][collection].aggregate(pipeline))
 
 

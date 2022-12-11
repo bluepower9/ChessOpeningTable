@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint, request, current_app
 from data.analyzedata import aggregate_data
+from api.util.util import get_all_moves, parse_data
 
 import chess
 import flask
@@ -43,15 +44,8 @@ def get_game_state():
     if len(game_format) == 0:
         game_format = ['bullet', 'blitz', 'standard']
 
-
-    board = chess.Board(fen)
-    all_moves = {}  #dict of fen: move
-
-    #gets all the FEN positions for all possible moves from the starting FEN position
-    for move in board.legal_moves:
-        board.push(move)
-        all_moves[board.fen()] = move
-        board.pop()
+    #gets all possible moves from a given position as a dict {fen: move}
+    all_moves = get_all_moves(fen)
 
     #calls the aggregate data function to run realtime analysis to get data.
     data = aggregate_data(
@@ -63,25 +57,9 @@ def get_game_state():
         format=game_format
         )
 
-    data = list(data)
+    data = data
     
-    result = []
-    for d in data:
-        total = int(d['total'])
-        #calculates win %
-        white = round(int(d['white'])/total * 100)
-        black = round(int(d['black'])/total *100)
-
-        state = {
-            'fen': d['_id']['game_state'],
-            'move': all_moves[d['_id']['game_state']],
-            'white': white,
-            'black': black,
-            'draw': 100 - white - black ,
-            'total': total
-        }
-
-        result.append(state)
+    result = parse_data(data, all_moves)
     
     return flask.render_template('analysis.html', min_elo=min_elo, max_elo=max_elo, format=game_format, fen=fen, moves=result)
 
