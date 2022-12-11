@@ -36,12 +36,12 @@ My project will be using MongoDB Community version as the database. The communit
         'draw': 20
     }
 ```
-game_state: FEN representation of game state
-elo: elo rating of the game
-format: what format the game was played in (bullet, blitz, standard)
-white: how many games white has won in that position
-black: how many games black has won in that position
-draw: how many games have been drawn in that position
+- game_state: FEN representation of game state
+- elo: elo rating of the game
+- format: what format the game was played in (bullet, blitz, standard)
+- white: how many games white has won in that position
+- black: how many games black has won in that position
+- draw: how many games have been drawn in that position
 
 My project connects to MongoDB via Pymongo in Python. There are 2 steps to running my application: setting up and storing data and running the full website and backend. Setting up and populating the database will take a very long time, however the web application can be used while it is populating. I recommend letting `setupDB.py` to run a few minutes before testing to ensure you have some games to view. Games are extracted by getting the game moves and the metadata from a game in the PGN file.  It then plays through the first 10 moves of the game (to save on storage space) and at each new game state, it adds/updates a document in the database.  A composite key is created using `(game_state, elo, format)` and for each key, it tracks the number of wins or draws the position has. When analyzing the data, one aggregation call is used to get the data every next game state possible instead of N number of aggregation calls.  For each game state in the call, it gathers all the documents of the game states and groups the documents by the game state which will combine all the requested elos and game formats that were searched for into a single document that adds the white, black, and draw fields and adds a count field tallying the total number of games that has reached that game state.
 
