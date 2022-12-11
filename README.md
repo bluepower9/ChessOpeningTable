@@ -68,7 +68,7 @@ The aggregation of these 2 documents results in:
         'white': 120,
         'black': 95,
         'draw': 25,
-        'count': 240
+        'total': 240
     }
 ```
 
