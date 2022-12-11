@@ -6,7 +6,7 @@
 Welcome to my chess opening table big data project!  Here you will be able to populate a MongoDB with chess games using pymongo and you will be able to access it via a webservice
 created with flask. The mainpage can be found on localhost:5000 where you can input a board position to generate the opening table. The website uses lichess embedded into it to 
 display the current position. You will be able to cycle through the moves by clicking on them to quickly navigate through the opening table.  The table will show the number of games
-each move has been played as well as the win and draw percentages for the position. The program performs realtime analysis of the data in the database to aggregate the different positions and get the requested games with the selected parameters.
+each move has been played as well as the win and draw percentages for the position. The program performs realtime analysis of the data in the database to aggregate the different positions and get the requested games with the selected parameters. White the project may look simple, it took a lot of effort to understand MongoDB and the best way to store, extract, and view the chess games. Setting up a large database takes a very long time (hours) because it has to play through each game. A lot of effort went into refining database document configuration, indexes as well as the aggregation pipeline because the service needs to be run in realtime and perform realtime analysis.  
 
 ---
 
