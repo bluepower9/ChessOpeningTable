@@ -56,9 +56,8 @@ def get_game_state():
         max_elo=max_elo, 
         format=game_format
         )
-
-    data = data
     
+    #parses the data and calculates averages and gets the game move that matches the fen
     result = parse_data(data, all_moves)
     
     return flask.render_template('analysis.html', min_elo=min_elo, max_elo=max_elo, format=game_format, fen=fen, moves=result)
