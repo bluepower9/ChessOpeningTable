@@ -69,7 +69,7 @@ def insert_data(filename: str, max_games:int=100000, db_name:str='chess', collec
     with open(filename, 'r') as file:
         game = chess.pgn.read_game(file)
         count = 0
-        with alive_bar(max_games) as bar:
+        with alive_bar(max_games) as bar:   #adds really cool progress bar!
             while game and count < max_games:
                 moves = list(game.mainline_moves())
 

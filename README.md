@@ -2,7 +2,7 @@
 
 ### By: Jarrod Leong
 
-## ABOUT
+## About
 Welcome to my chess opening table big data project!  Here you will be able to populate a MongoDB with chess games using pymongo and you will be able to access it via a webservice
 created with flask. The mainpage can be found on localhost:5000 where you can input a board position to generate the opening table. The website uses lichess embedded into it to 
 display the current position. You will be able to cycle through the moves by clicking on them to quickly navigate through the opening table.  The table will show the number of games
@@ -11,7 +11,7 @@ each move has been played as well as the win and draw percentages for the positi
 ---
 
 ## Functionalities
-My projct has a few different functionalities:
+My project has a few different functionalities:
 #### - populate database given a PGN file
 #### - query and perform realtime analysis of data in database
 #### - get results and view it from a webpage (localhost:5000)
@@ -24,7 +24,7 @@ My project provides a script to read a given PGN file and will populate a databa
 For my project, I decided to make a simple website application that allows a user to input a chess position and some parameters including the elo and format the user wants to search
 for.  The application is built using Python and Flask for the API.  The api is simple, yet effective for its purposes.  I am using Flask templates which runs using Jinja that allowed me to create simple yet dynamic webpages for the opening table. My api has 2 endpoints: the homepage and /analysis which analyzes a given position and parameters and returns the results of the opening table. The analysis webpage allows a user to click on any of the moves on the right to quickly navigate to the next chess position.  A board is shown on the left that allows a user to visualize the position. The board is generated from https://lichess.org. 
 
-My project will be using MongoDB Community version as the database. The community version allows me to store large amounts of data locally for testing and running the application without having to buy a service to run on Atlas. The free version of Atlas does not allow a large enough allowance of storage space for my application. In MongoDB, I created a database called "chess" and a collection called "games" as the default, but you can change it in the configs and parameters when setting up the database. The application will perform realtime data analysis to gather data about the next game states from the current queried game state. An aggregation pipeline is used to aggregate all possible next game states and their results from the database and returns the top 5 game states based on how many games were played. The pipeline can be found in `/database/analyzedata.py`. A document in my MongoDB project follows format: 
+My project will be using MongoDB Community version as the database. The community version allows me to store large amounts of data locally for testing and running the application without having to buy a service to run on Atlas. The free version of Atlas does not allow a large enough allowance of storage space for my application. In MongoDB, I created a database called "chess" and a collection called "games" as the default, but you can change it in the configs and parameters when setting up the database. The application will perform realtime data analysis to gather data about the next game states from the current queried game state. An aggregation pipeline is used to aggregate all possible next game states and their results from the database and returns the top 5 game states based on how many games were played. Realtime analysis must be used since the parameters for requested chess Opening Moves are dynamic and depends on the user's needs.  The pipeline can be found in `/database/analyzedata.py`. A document in my MongoDB project follows format: 
 
 ```
     {
@@ -32,7 +32,7 @@ My project will be using MongoDB Community version as the database. The communit
         'elo': 1000,
         'format': 'blitz',
         'white': 100,
-        'black': 88,
+        'black': 80,
         'draw': 20
     }
 ```
@@ -43,12 +43,39 @@ white: how many games white has won in that position
 black: how many games black has won in that position
 draw: how many games have been drawn in that position
 
-My project connects to MongoDB via Pymongo in Python. There are 2 steps to running my application: setting up and storing data and running the full website and backend. Setting up and populating the database will take a very long time, however the web application can be used while it is populating. I recommend letting `setupDB.py` to run a few minutes before testing to ensure you have some games to view.
+My project connects to MongoDB via Pymongo in Python. There are 2 steps to running my application: setting up and storing data and running the full website and backend. Setting up and populating the database will take a very long time, however the web application can be used while it is populating. I recommend letting `setupDB.py` to run a few minutes before testing to ensure you have some games to view. Games are extracted by getting the game moves and the metadata from a game in the PGN file.  It then plays through the first 10 moves of the game (to save on storage space) and at each new game state, it adds/updates a document in the database.  A composite key is created using `(game_state, elo, format)` and for each key, it tracks the number of wins or draws the position has. When analyzing the data, one aggregation call is used to get the data every next game state possible instead of N number of aggregation calls.  For each game state in the call, it gathers all the documents of the game states and groups the documents by the game state which will combine all the requested elos and game formats that were searched for into a single document that adds the white, black, and draw fields and adds a count field tallying the total number of games that has reached that game state.
+
+Example:
+
+Take the game state above as well as the following one:
+
+```
+    {
+        'game_state': 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        'elo': 1200,
+        'format': 'bullet',
+        'white': 20,
+        'black': 15,
+        'draw': 5
+    }
+```
+
+The aggregation of these 2 documents results in:
+
+```
+    {
+        'game_state': 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+        'white': 120,
+        'black': 95,
+        'draw': 25,
+        'count': 240
+    }
+```
 
 ## REQUIREMENTS
 #### - requires python 3 (developed on 3.10)
 #### - dependencies can be found in requirements.txt
-#### - must have MongDB Community version installed and running.  Program will hang if it is not running
+#### - must have MongDB Community version installed and running.  Program will hang if it is not running. You can download it from: https://www.mongodb.com/try/download/community
 #### - visit https://database.lichess.org/ to download a .pgn file of games and extract the pgn file. *you may want to find a small file as it will be decompressed and increase in size dramatically*
 
 ---
