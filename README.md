@@ -1,4 +1,4 @@
-# CPSC 531 Chess Opening Table Project
+# Chess Opening Table Project
 
 ### By: Jarrod Leong
 
